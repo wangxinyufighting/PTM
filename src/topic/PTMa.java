@@ -73,15 +73,21 @@ public class PTMa {
 
 		int P = herbs.length;
 
+		//p*k 第p篇药方的第k个topic的单词的个数
 		np = new int[P][K];
+		//第p篇药方的总次数
 		npsum = new int[P];
 
+        //s*k topic syndrome k下s的数量
 		ns = new int[S][K];
+        //第k个syndrome主题下的词的总次数
 		nssum = new int[K];
 
+        //分配给h的k和x的数量
 		kxh = new int[K][X][H];
 		nhsum = new int[K][X];
 
+        //p中k和x的数量
 		nx = new int[P][K][X];
 		nxsum = new int[P][K];
 
@@ -176,8 +182,9 @@ public class PTMa {
 
 		for (int k = 0; k < K; k++) {
 
-			pr[k] = (np[p][k] + alpha) / (npsum[p] + K * alpha) * (ns[symptoms[p][m]][k] + beta_bar)
-					/ (nssum[k] + S * beta_bar);
+			pr[k] = (np[p][k] + alpha) / (npsum[p] + K * alpha)
+                    * (ns[symptoms[p][m]][k] + beta_bar) / (nssum[k] + S * beta_bar);
+
 		}
 
 		syn = sample(pr);
@@ -189,47 +196,31 @@ public class PTMa {
 	}
 
 	int[] sampleFullConditionalTreatRole(int p, int n) {
-
 		int[] treat_role = new int[2];
-
 		int treat = treatment[p][n];
-
 		int role = x[p][n];
-
 		updateCountHerb(p, treat, role, herbs[p][n], -1);
-
 		double[][] pr = new double[K][X];
-
 		for (int k = 0; k < K; k++) {
-
 			for (int r = 0; r < X; r++) {
-
-				pr[k][r] = (np[p][k] + alpha) / (npsum[p] + K * alpha) * (nx[p][k][r] + eta) / (nxsum[p][k] + X * eta)
+				pr[k][r] = (np[p][k] + alpha) / (npsum[p] + K * alpha)
+                        * (nx[p][k][r] + eta) / (nxsum[p][k] + X * eta)
 						* (kxh[k][r][herbs[p][n]] + beta) / (nhsum[k][r] + H * beta);
-
 			}
 		}
-
 		double[] pr_sum = new double[K * X];
-
 		for (int k = 0; k < K; k++) {
-
 			for (int r = 0; r < X; r++) {
 				pr_sum[k * X + r] = pr[k][r];
 			}
-
 		}
 
 		int index = sample(pr_sum);
-
 		treat = index / X;
 		role = index % X;
-
 		treat_role[0] = treat;
 		treat_role[1] = role;
-
 		updateCountHerb(p, treat, role, herbs[p][n], +1);
-
 		return treat_role;
 	}
 

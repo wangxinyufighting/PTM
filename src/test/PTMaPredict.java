@@ -1,5 +1,7 @@
 package test;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,17 +22,17 @@ public class PTMaPredict {
 
 		for (int i = 0; i < 10; i++) {
 
-			List<String> herbs_list = Corpus.getVocab("data//herbs_contains.txt");
+			List<String> herbs_list = Corpus.getVocab("D:\\PTM\\PTM\\data\\LFLDA\\herb_embedding.txt");
 
-			List<String> symptoms_list = Corpus.getVocab("data//symptom_contains.txt");
+			List<String> symptoms_list = Corpus.getVocab("D:\\PTM\\PTM\\data\\LFLDA\\symp_embedding.txt");
 
-			int[][] herbs_train = Corpus.getDocuments("file//pre_herbs_train.txt");
+			int[][] herbs_train = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\herbs_train.txt");
 
-			int[][] symptoms_train = Corpus.getDocuments("file//pre_symptoms_train.txt");
+			int[][] symptoms_train = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\symps_train.txt");
 
-			int[][] herbs_test = Corpus.getDocuments("file//pre_herbs_test.txt");
+			int[][] herbs_test = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\herbs_test.txt");
 
-			int[][] symptoms_test = Corpus.getDocuments("file//pre_symptoms_test.txt");
+			int[][] symptoms_test = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\symps_test.txt");
 
 			PTMa ptm = new PTMa(herbs_train, symptoms_train, herbs_list.size(), symptoms_list.size());
 
@@ -50,25 +52,54 @@ public class PTMaPredict {
 
 			double[][] prescription_topic = ptm.estimateTheta();
 
-			double symptom_perplexity = EvaluationPTM.ptm_symptom_predictive_perplexity(herbs_test, symptoms_test,
-					herb_topic, symptom_topic);
+			BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\wxy\\Desktop\\PTM.phiHerb"));
+			for (int t = 0; t < K; t++) {
+				for (int x = 0; x < 4; x++) {
+					for(int h = 0; h < herb_topic[0][0].length; h++){
+						writer.write(herb_topic[t][x][h] + " ");
+					}
+				}
+				writer.write("\n");
+			}
+			writer.close();
 
-			System.out.println("PTM(a) symptom predictive perplexity : " + symptom_perplexity);
+			BufferedWriter writerS = new BufferedWriter(new FileWriter("C:\\Users\\wxy\\Desktop\\PTM.phiSymp"));
+			for (int t = 0; t < K; t++) {
+				for(int s = 0; s < symptom_topic[0].length; s++){
+					writerS.write(symptom_topic[t][s]+ " ");
 
-			double symptom_precision_k = EvaluationPTM.ptm_symptom_precision_k(herbs_test, symptoms_test, herb_topic,
-					symptom_topic, N);
+				}
+				writerS.write("\n");
+			}
+			writerS.close();
 
-			System.out.println("PTM(a) symptom precision@" + N + ": " + symptom_precision_k);
+//			for(int k = 0; k < K; k++){
+//				for(int s = 0; s < symptoms_list.size(); s++){
+//					System.out.println("症状"+s+"\t主题"+k+"\t:"+symptom_topic[k][s]);
+//				}
+//			}
 
-			double symptom_recall_k = EvaluationPTM.ptm_symptom_recall_k(herbs_test, symptoms_test, herb_topic,
-					symptom_topic, N);
 
-			System.out.println("PTM(a) symptom recall@" + N + ": " + symptom_recall_k);
 
-			double symptom_ndcg_k = EvaluationPTM.ptm_symptom_ndcg(herbs_test, symptoms_test, herb_topic, symptom_topic,
-					N);
-
-			System.out.println("PTM(a) symptom NDCG@" + N + ": " + symptom_ndcg_k);
+//			double symptom_perplexity = EvaluationPTM.ptm_symptom_predictive_perplexity(herbs_test, symptoms_test,
+//					herb_topic, symptom_topic);
+//
+//			System.out.println("PTM(a) symptom predictive perplexity : " + symptom_perplexity);
+//
+//			double symptom_precision_k = EvaluationPTM.ptm_symptom_precision_k(herbs_test, symptoms_test, herb_topic,
+//					symptom_topic, N);
+//
+//			System.out.println("PTM(a) symptom precision@" + N + ": " + symptom_precision_k);
+//
+//			double symptom_recall_k = EvaluationPTM.ptm_symptom_recall_k(herbs_test, symptoms_test, herb_topic,
+//					symptom_topic, N);
+//
+//			System.out.println("PTM(a) symptom recall@" + N + ": " + symptom_recall_k);
+//
+//			double symptom_ndcg_k = EvaluationPTM.ptm_symptom_ndcg(herbs_test, symptoms_test, herb_topic, symptom_topic,
+//					N);
+//
+//			System.out.println("PTM(a) symptom NDCG@" + N + ": " + symptom_ndcg_k);
 
 			double herb_perplexity = EvaluationPTM.ptm_herb_predictive_perplexity(herbs_test, symptoms_test, herb_topic,
 					symptom_topic, prescription_topic_role, prescription_topic);
@@ -89,8 +120,8 @@ public class PTMaPredict {
 					prescription_topic_role, prescription_topic, N);
 
 			System.out.println("PTM(a) herb NDCG@" + N + ": " + herb_ndcg_k);
-			sb.append(herb_perplexity + "," + herb_precision_k + "," + symptom_perplexity + "," + symptom_precision_k
-					+ "\n");
+//			sb.append(herb_perplexity + "," + herb_precision_k + "," + symptom_perplexity + "," + symptom_precision_k
+//					+ "\n");
 
 		}
 

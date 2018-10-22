@@ -51,7 +51,6 @@ public class RunPTMa {
 			double[] sum_2 = new double[symptom_topic.length];
 
 			for (int p_1 = 0; p_1 < prescription_topic.length; p_1++) {
-
 				for (int k = 0; k < herb_topic.length; k++)
 					sum_2[k] += prescription_topic[p_1][k];
 			}

@@ -16,23 +16,36 @@ public class PTMdPredict {
 
 		StringBuilder sb = new StringBuilder();
 
-		int K = 20;
+		int K = 40;
 
-		int N = 5;
+		int N = 20;
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
 
-			List<String> herbs_list = Corpus.getVocab("data//herbs_contains.txt");
 
-			List<String> symptoms_list = Corpus.getVocab("data//symptom_contains.txt");
+//			List<String> herbs_list = Corpus.getVocab("data//herbs_contains.txt");
+//
+//			List<String> symptoms_list = Corpus.getVocab("data//symptom_contains.txt");
+//
+//			int[][] herbs_train = Corpus.getDocuments("file//pre_herbs_train.txt");
+//
+//			int[][] symptoms_train = Corpus.getDocuments("file//pre_symptoms_train.txt");
+//
+//			int[][] herbs_test = Corpus.getDocuments("file//pre_herbs_test.txt");
+//
+//			int[][] symptoms_test = Corpus.getDocuments("file//pre_symptoms_test.txt");
 
-			int[][] herbs_train = Corpus.getDocuments("file//pre_herbs_train.txt");
+			List<String> herbs_list = Corpus.getVocab("D:\\PTM\\PTM\\data\\LFLDA\\herb_embedding.txt");
 
-			int[][] symptoms_train = Corpus.getDocuments("file//pre_symptoms_train.txt");
+			List<String> symptoms_list = Corpus.getVocab("D:\\PTM\\PTM\\data\\LFLDA\\symp_embedding.txt");
 
-			int[][] herbs_test = Corpus.getDocuments("file//pre_herbs_test.txt");
+			int[][] herbs_train = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\herbs_train.txt");
 
-			int[][] symptoms_test = Corpus.getDocuments("file//pre_symptoms_test.txt");
+			int[][] symptoms_train = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\symps_train.txt");
+
+			int[][] herbs_test = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\herbs_test.txt");
+
+			int[][] symptoms_test = Corpus.getDocuments("D:\\PTM\\PTM\\data\\LFLDA\\symps_test.txt");
 
 			Map<String, Set<String>> sym_herb_map = TopicPrecisionSymToHerb
 					.getSymptomHerbSetKnowledge("data//symptom_herb_tcm_mesh.txt");
@@ -63,6 +76,8 @@ public class PTMdPredict {
 			double symptom_perplexity = EvaluationPTM.ptm_symptom_predictive_perplexity(herbs_test, symptoms_test,
 					herb_topic, symptom_topic);
 
+			System.out.println("K:"+K);
+			System.out.println("topN:"+N);
 			System.out.println("PTM(d) symptom predictive perplexity : " + symptom_perplexity);
 
 			double symptom_precision_k = EvaluationPTM.ptm_symptom_precision_k(herbs_test, symptoms_test, herb_topic,
